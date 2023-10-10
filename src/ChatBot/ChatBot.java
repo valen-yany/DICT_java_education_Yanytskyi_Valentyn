@@ -18,5 +18,16 @@ public class ChatBot {
         for(int i = 0; i <= border;i++){
             System.out.printf("%d !\n", i);
         }
+        System.out.println("How write comment in Java?\n1. #\n2. //\n3. ;\n4. <!-- -->\n");
+        while(true){
+            int answer = in.nextInt();
+            if(answer == 2){
+                System.out.println("Correct");
+                break;
+            }
+            System.out.println("Wrong");
+        }
+        System.out.println("Goodbye, have a nice day!");
+
     }
 }
