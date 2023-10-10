@@ -8,6 +8,11 @@ public class ChatBot {
         String botName = "Artem";
         System.out.printf("Hello, my name is %s.\nI was created in %s.\nPlease, remind me your name.\n", botName, year);
         String userName = in.nextLine();
-        System.out.printf("What a great name you have, %s!", userName);
+        System.out.printf("What a great name you have, %s!\nLet me guess your age.\nEnter remainders of dividing your age by 3, 5 and 7.\n", userName);
+        int remainder3 = in.nextInt();
+        int remainder5 = in.nextInt();
+        int remainder7 = in.nextInt();
+        int age = (remainder3 * 70 + remainder5 * 21 + remainder7 * 15) % 105;
+        System.out.printf("Your age is %d; that's a good time to start programming!", age);
     }
 }
