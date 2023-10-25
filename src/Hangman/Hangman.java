@@ -10,8 +10,9 @@ public class Hangman {
     }
 
     private static void hangman(String[] words_list){
-        System.out.print("Guess the world: ");
         String answer = choice(words_list);
+        String word_output = answer.substring(0,2) + "-".repeat(answer.length() - 2);
+        System.out.printf("Guess the world %s: ", word_output);
         String player_input = input();
         if (player_input.equals(answer)){
             System.out.println("You survived!");
@@ -23,7 +24,7 @@ public class Hangman {
 
     private static String input(){
         Scanner in = new Scanner(System.in);
-        return in.nextLine();
+        return in.nextLine().toLowerCase();
     }
 
     private static String choice(String[] words){
