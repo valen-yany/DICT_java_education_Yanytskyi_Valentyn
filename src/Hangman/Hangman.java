@@ -1,6 +1,7 @@
 package Hangman;
 import java.util.Scanner;
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Hangman {
     public static void main(String[] args){
@@ -11,15 +12,23 @@ public class Hangman {
 
     private static void hangman(String[] words_list){
         int lives = 8;
+        ArrayList<String> guessed_letters = new ArrayList<>();
         String answer = choice(words_list);
         String word = answer;
         String word_output = "-".repeat(answer.length());
         while(lives > 0){
             System.out.printf("\n%s\nInput a letter: ", word_output);
             String player_input = input();
-            if (word_output.contains(player_input)){
-                System.out.println("No improvements");
-                lives--;
+            if (player_input.length() > 1){
+                System.out.println("You should input a single letter");
+                continue;
+            }
+            if (!player_input.matches("[a-z]")){
+                System.out.println("Please enter a lowercase English letter.");
+                continue;
+            }
+            if (guessed_letters.contains(player_input)){
+                System.out.println("You`ve already guessed this letter");
             }
             else if(word.contains(player_input)){
                 while(word.contains(player_input)){
@@ -27,11 +36,14 @@ public class Hangman {
                     word = word.substring(0, index) + "-" + word.substring(index + 1);
                     word_output = word_output.substring(0, index) + player_input + word_output.substring(index + 1);
                 }
+                guessed_letters.add(player_input);
             }
             else{
                 System.out.println("That letter doesn`t appear in the word");
                 lives--;
+                guessed_letters.add(player_input);
             }
+
             if(answer.equals(word_output)){
                 System.out.printf("\n%s\nYou guessed the word!\nYou survived!", answer);
                 return;
@@ -43,7 +55,7 @@ public class Hangman {
 
     private static String input(){
         Scanner in = new Scanner(System.in);
-        return in.nextLine().toLowerCase();
+        return in.nextLine();
     }
 
     private static String choice(String[] words){
