@@ -14,10 +14,14 @@ public class Hangman {
         String answer = choice(words_list);
         String word = answer;
         String word_output = "-".repeat(answer.length());
-        for(int i = 0; i < lives; i++){
+        while(lives > 0){
             System.out.printf("\n%s\nInput a letter: ", word_output);
             String player_input = input();
-            if(word.contains(player_input)){
+            if (word_output.contains(player_input)){
+                System.out.println("No improvements");
+                lives--;
+            }
+            else if(word.contains(player_input)){
                 while(word.contains(player_input)){
                     int index = word.indexOf(player_input);
                     word = word.substring(0, index) + "-" + word.substring(index + 1);
@@ -26,10 +30,15 @@ public class Hangman {
             }
             else{
                 System.out.println("That letter doesn`t appear in the word");
+                lives--;
+            }
+            if(answer.equals(word_output)){
+                System.out.printf("\n%s\nYou guessed the word!\nYou survived!", answer);
+                return;
             }
 
         }
-        System.out.println("Thanks for playing!\nWe`ll see how well you did in the next stage");
+        System.out.println("You lost!");
     }
 
     private static String input(){
