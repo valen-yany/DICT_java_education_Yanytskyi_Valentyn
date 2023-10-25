@@ -10,16 +10,26 @@ public class Hangman {
     }
 
     private static void hangman(String[] words_list){
+        int lives = 8;
         String answer = choice(words_list);
-        String word_output = answer.substring(0,2) + "-".repeat(answer.length() - 2);
-        System.out.printf("Guess the world %s: ", word_output);
-        String player_input = input();
-        if (player_input.equals(answer)){
-            System.out.println("You survived!");
+        String word = answer;
+        String word_output = "-".repeat(answer.length());
+        for(int i = 0; i < lives; i++){
+            System.out.printf("\n%s\nInput a letter: ", word_output);
+            String player_input = input();
+            if(word.contains(player_input)){
+                while(word.contains(player_input)){
+                    int index = word.indexOf(player_input);
+                    word = word.substring(0, index) + "-" + word.substring(index + 1);
+                    word_output = word_output.substring(0, index) + player_input + word_output.substring(index + 1);
+                }
+            }
+            else{
+                System.out.println("That letter doesn`t appear in the word");
+            }
+
         }
-        else{
-            System.out.println("You lost!");
-        }
+        System.out.println("Thanks for playing!\nWe`ll see how well you did in the next stage");
     }
 
     private static String input(){
