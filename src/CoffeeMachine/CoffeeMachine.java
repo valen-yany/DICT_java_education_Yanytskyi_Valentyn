@@ -1,5 +1,4 @@
 package CoffeeMachine;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class CoffeeMachine {
@@ -11,28 +10,34 @@ public class CoffeeMachine {
         int cups = 9;
         int money = 550;
         int[] ingredients = new int[] {water, milk, beans, cups, money};
-        printIngredients(ingredients);
-        String input = "";
-        while(!input.equals("buy") && !input.equals("fill") && !input.equals("take")) {
-            System.out.println("\nWrite action(buy, fill, take):");
-            input = in.nextLine();
-        }
-        if(input.equals("buy")){
-            int coffee_type = 0;
-            while (coffee_type < 1 || coffee_type > 3 ){
-                System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino:");
-                coffee_type = in.nextInt();
+        String action = "";
+        while(true){
+            System.out.println("\nWrite action (buy, fill, take, remaining, exit):");
+            action = in.next();
+            if(action.equals("buy")){
+                String coffee_type = "";
+                while (!coffee_type.equals("1") && !coffee_type.equals("2") && !coffee_type.equals("3") && !coffee_type.equals("back")){
+                    System.out.println("\nWhat do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu:");
+                    coffee_type = in.next();
+                }
+                if (coffee_type.equals("back")){
+                    continue;
+                }
+                makeCoffee(ingredients, coffee_type);
             }
-            makeCoffee(ingredients, coffee_type);
+            else if(action.equals("fill")){
+                fillMachine(ingredients);
+            }
+            else if(action.equals("take")){
+                takeMoney(ingredients);
+            }
+            else if(action.equals("remaining")){
+                printIngredients(ingredients);
+            }
+            else if(action.equals("exit")){
+                break;
+            }
         }
-        else if(input.equals("fill")){
-            fillMachine(ingredients);
-        }
-        else {
-            takeMoney(ingredients);
-        }
-        printIngredients(ingredients);
-
     }
 
     public static void printIngredients(int[] ingredients){
@@ -43,33 +48,44 @@ public class CoffeeMachine {
                 %d of milk
                 %d of coffee beans
                 %d of disposable cups
-                %d of money\n""", ingredients[0], ingredients[1], ingredients[2], ingredients[3], ingredients[4]);
+                %d of money
+                """, ingredients[0], ingredients[1], ingredients[2], ingredients[3], ingredients[4]);
     }
 
-    public static void makeCoffee(int[] ingredients, int type){
-        if(type == 1){
-            ingredients[0] -= 250;
-            ingredients[2] -= 16;
-            ingredients[4] += 4;
+    public static void makeCoffee(int[] ingredients, String type){
+        int t = Integer.parseInt(type);
+        int[][] coffeeIngredients = new int[][] {{250, 0, 16, 1, -4}, {350, 75, 20, 1, -7}, {200, 100, 12, 1, -6}};
+        if (checkIngredients(ingredients, coffeeIngredients[t - 1])) {
+            System.out.println("I have enough resources, making you a coffee!");
+            for(int i=0; i < 5; i++){
+                ingredients[i] -= coffeeIngredients[t-1][i];
+            }
         }
-        else if(type == 2){
-            ingredients[0] -= 350;
-            ingredients[1] -= 75;
-            ingredients[2] -= 20;
-            ingredients[4] += 7;
+    }
+
+    public static boolean checkIngredients(int[] ingredients, int[] recipe){
+        if(ingredients[0] - recipe[0] < 0){
+            System.out.println("Sorry, no enough water!");
+            return false;
         }
-        else if(type == 3){
-            ingredients[0] -= 200;
-            ingredients[1] -= 100;
-            ingredients[2] -= 12;
-            ingredients[4] += 6;
+        else if(ingredients[1] - recipe[1] < 0){
+            System.out.println("Sorry, no enough milk!");
+            return false;
         }
-        ingredients[3] -= 1;
+        else if(ingredients[2] - recipe[2] < 0){
+            System.out.println("Sorry, no enough coffee beans!");
+            return false;
+        }
+        else if(ingredients[3] - recipe[3] < 0){
+            System.out.println("Sorry, no enough disposable cups!");
+            return false;
+        }
+        return true;
     }
 
     public static void fillMachine(int[] ingredients){
         Scanner i = new Scanner(System.in);
-        System.out.println("Write how many ml of water you want to add:");
+        System.out.println("\nWrite how many ml of water you want to add:");
         ingredients[0] += i.nextInt();
         System.out.println("Write how many ml of milk you want to add:");
         ingredients[1] += i.nextInt();
