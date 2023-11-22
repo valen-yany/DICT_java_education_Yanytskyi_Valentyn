@@ -5,33 +5,27 @@ import java.util.Scanner;
 public class TicTacToe {
     public static void main(String[] args){
         Board b = new Board();
-        Player p = new Player('X');
+        Player p1 = new Player('X');
+        Player p2 = new Player('O');
+        Player p_current = p1;
         b.PrintGrid();
-        p.MakeMove(b);
-        b.PrintGrid();
+        while(b.CheckEmpty()) {
+            p_current.MakeMove(b);
+            b.PrintGrid();
+            if(b.CheckWin(p_current.GetSymbol())){
+                System.out.printf("%s wins", p_current.GetSymbol());
+                return;
+            }
+            p_current = (p_current == p1) ? p2:p1;
+        }
     }
 
 
 }
 
 class Board{
-    private final char[][] grid = new char[3][3];
-    public Board(){
-        String field = "";
-        while (field.length() != 9 || !field.matches(".*[XO_]")){
-            System.out.print("Enter cells: ");
-            Scanner in = new Scanner(System.in);
-            field = in.next();
-        }
-        SetGrid(field.toCharArray());
-    }
+    private final char[][] grid = new char[][] {{'_', '_', '_'}, {'_', '_', '_'}, {'_', '_', '_'}};
 
-    private void SetGrid(char[] field){
-        for(int i=0;i<9;i++){
-            grid[i/3][i%3] = field[i];
-        }
-    }
-    
     public void PrintGrid(){
         System.out.println("-----");
         for (char[] line:grid) {
@@ -42,22 +36,6 @@ class Board{
             System.out.println("|");
         }
         System.out.println("-----");
-    }
-
-    public boolean CheckImpossible(){
-        int x_grid = 0;
-        int o_grid = 0;
-        for(char[] line: grid){
-            for(char cell: line){
-                if(cell == 'X'){
-                    x_grid++;
-                }
-                else if(cell == 'O'){
-                    o_grid++;
-                }
-            }
-        }
-        return (Math.abs(x_grid - o_grid) >=2 || (CheckWin('X') && CheckWin('O')));
     }
 
     public boolean CheckWin(char player){
