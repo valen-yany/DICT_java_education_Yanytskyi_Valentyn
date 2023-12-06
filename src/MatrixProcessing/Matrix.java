@@ -19,12 +19,12 @@ public class Matrix {
                 if (row.length != columns) {
                     throw new Exception("You must enter correct row with right number of columns");
                 }
-                ;
+
                 for (int k = 0; k < columns; k++) {
-                    if (!row[i].matches("[0-9]")) {
+                    if (!row[k].matches("^-?\\d+(\\.\\d+)?$")) {
                         throw new Exception("You must enter only numbers");
                     }
-                    data[i][k] = Integer.parseInt(row[k]);
+                    data[i][k] = Double.parseDouble(row[k]);
                 }
             }catch(Exception e){
                 System.out.println("Error: " + e.getMessage());
@@ -65,7 +65,7 @@ public class Matrix {
         int resultColumns = m1.getColumns();
         try{
             if(resultRows != m2.getRows() || resultColumns != m2.getColumns()){
-                throw new Exception("ERROR");
+                throw new Exception("The operation cannot be performed. Numbers of rows and columns in matrices must be equal");
             }
         }catch(Exception e){
             System.out.println(e.getMessage());
@@ -82,7 +82,7 @@ public class Matrix {
         return new Matrix(resultRows, resultColumns, resultData);
     }
 
-    public static Matrix MatrixMultiplyByConstant(Matrix matrix, double constant){
+    public static Matrix multiplyByConstant(Matrix matrix, double constant){
         int matrixRows = matrix.getRows();
         int matrixColumns = matrix.getColumns();
         double[][] matrixData = new double [matrixRows][matrixColumns];
@@ -92,5 +92,31 @@ public class Matrix {
             }
         }
         return new Matrix(matrixRows,matrixColumns,matrixData);
+    }
+
+    public static Matrix multiply(Matrix m1, Matrix m2){
+        int resultRows = m1.getRows();
+        int resultColumns = m2.getColumns();
+        try{
+            if(m2.getRows() != m1.getColumns()){
+                throw new Exception("The operation cannot be performed. Number of  columns in first matrix and number of rows in second matrix must be equal");
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
+
+        double[][] firstMatrix = m1.getData();
+        double[][] secondMatrix = m2.getData();
+        double[][] resultData = new double[resultRows][resultColumns];
+        for(int i = 0; i < resultRows;i++){
+            for(int j=0;j<resultColumns;j++){
+                resultData[i][j] = 0;
+                for(int k=0;k<m2.getRows();k++){
+                    resultData[i][j] += firstMatrix[i][k] * secondMatrix[k][j];
+                }
+            }
+        }
+        return new Matrix(resultRows,resultColumns,resultData);
     }
 }
