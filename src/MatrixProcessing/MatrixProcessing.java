@@ -2,22 +2,31 @@ package MatrixProcessing;
 import java.util.Scanner;
 
 public class MatrixProcessing {
+    private static final Scanner in = new Scanner(System.in);
     public static void main(String[] args){
-        matricesAdd();
+        //matricesAdd();
+        matrixConstMultiply();
     }
 
     private static void matricesAdd(){
         int[] firstSizes = getSizes();
         Matrix firstMatrix = new Matrix(firstSizes[0], firstSizes[1]);
         int[] secondSizes = getSizes();
-        Matrix seconndMatrix = new Matrix(secondSizes[0], secondSizes[1]);
-        Matrix thirdMatrix = Matrix.add(firstMatrix, seconndMatrix);
+        Matrix secondMatrix = new Matrix(secondSizes[0], secondSizes[1]);
+        Matrix thirdMatrix = Matrix.add(firstMatrix, secondMatrix);
         thirdMatrix.print();
+    }
+
+    private static void matrixConstMultiply(){
+        int[] Sizes = getSizes();
+        Matrix matrix = new Matrix(Sizes[0], Sizes[1]);
+        double constant = in.nextDouble();
+        Matrix result = Matrix.MatrixMultiplyByConstant(matrix, constant);
+        result.print();
     }
 
     private static int[] getSizes(){
         int[] sizes = new int[2];
-        Scanner in = new Scanner(System.in);
         try{
             String[] size = in.nextLine().trim().split("\\s+");
             if (size.length != 2){

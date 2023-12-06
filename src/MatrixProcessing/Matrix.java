@@ -81,4 +81,16 @@ public class Matrix {
         }
         return new Matrix(resultRows, resultColumns, resultData);
     }
+
+    public static Matrix MatrixMultiplyByConstant(Matrix matrix, double constant){
+        int matrixRows = matrix.getRows();
+        int matrixColumns = matrix.getColumns();
+        double[][] matrixData = new double [matrixRows][matrixColumns];
+        for(int i=0;i<matrixRows;i++){
+            for(int j=0;j<matrixColumns;j++){
+                matrixData[i][j] = matrix.getData()[i][j] * constant;
+            }
+        }
+        return new Matrix(matrixRows,matrixColumns,matrixData);
+    }
 }
