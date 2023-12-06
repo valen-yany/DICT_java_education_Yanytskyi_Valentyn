@@ -74,3 +74,4 @@ public class Hangman {
         return words[rnd.nextInt(words.length)];
     }
 }
+
