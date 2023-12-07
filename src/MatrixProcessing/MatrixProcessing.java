@@ -1,4 +1,5 @@
 package MatrixProcessing;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public class MatrixProcessing {
@@ -11,19 +12,17 @@ public class MatrixProcessing {
                     1.Add matrices
                     2.Multiply matrix by a constant
                     3.Multiply matrices
+                    4.Transpose matrix
+                    5.Calculate a determinate
                     0.Exit""");
             System.out.print("Your choice: ");
             option = in.nextLine();
-            switch (option){
-                case "1":
-                    matricesAdd();
-                    break;
-                case "2":
-                    matrixConstMultiply();
-                    break;
-                case "3":
-                    matricesMultiply();
-                    break;
+            switch (option) {
+                case "1" -> matricesAdd();
+                case "2" -> matrixConstMultiply();
+                case "3" -> matricesMultiply();
+                case "4" -> matrixTranspose();
+                case "5" -> matrixDeterminate();
             }
         }
     }
@@ -42,15 +41,23 @@ public class MatrixProcessing {
         thirdMatrix.print();
     }
 
-    private static void matrixConstMultiply(){
+    private static void matrixTranspose(){
+        System.out.println("""
+                    
+                    1.Main diagonal
+                    2.Side diagonal
+                    3.Vertical line
+                    4.Horizontal line
+                    0.Exit""");
+        System.out.print("Your choice: ");
+        String type = in.nextLine();
+        int t = Integer.parseInt(type);
         System.out.print("Enter size of matrix:");
         int[] Sizes = getSizes();
         System.out.println("Enter matrix:");
         Matrix matrix = new Matrix(Sizes[0], Sizes[1]);
-        System.out.print("Enter constant: ");
-        String constantInput = in.next();
-        double constant = Double.parseDouble(constantInput);
-        Matrix result = Matrix.multiplyByConstant(matrix, constant);
+
+        Matrix result = Matrix.transpose(matrix, t);
         System.out.println("The result is:");
         result.print();
     }
@@ -69,6 +76,28 @@ public class MatrixProcessing {
         thirdMatrix.print();
     }
 
+    private static void matrixConstMultiply(){
+        System.out.print("Enter size of matrix:");
+        int[] Sizes = getSizes();
+        System.out.println("Enter matrix:");
+        Matrix matrix = new Matrix(Sizes[0], Sizes[1]);
+        System.out.print("Enter constant: ");
+        String constantInput = in.next();
+        double constant = Double.parseDouble(constantInput);
+        Matrix result = Matrix.multiplyByConstant(matrix, constant);
+        System.out.println("The result is:");
+        result.print();
+    }
+
+    private static void matrixDeterminate(){
+        System.out.print("Enter size of matrix:");
+        int[] Sizes = getSizes();
+        System.out.println("Enter matrix:");
+        Matrix matrix = new Matrix(Sizes[0], Sizes[1]);
+        double result = Matrix.determinant(matrix);
+        System.out.println("The result is:");
+        System.out.println(new DecimalFormat( "#.###" ).format(result));
+    }
 
     private static int[] getSizes() {
         int[] sizes = new int[2];

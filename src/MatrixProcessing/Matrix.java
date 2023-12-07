@@ -119,4 +119,95 @@ public class Matrix {
         }
         return new Matrix(resultRows,resultColumns,resultData);
     }
+
+    public static Matrix transpose(Matrix matrix, int type){
+        int resultRow = 1;
+        int resultColumn = 1;
+        double[][] result = {{0}};
+        try{
+
+            switch (type) {
+                case 1 -> {
+                    resultRow = matrix.getColumns();
+                    resultColumn = matrix.getRows();
+                    result = new double[resultRow][resultColumn];
+                    for (int i = 0; i < resultRow; i++) {
+                        for (int j = 0; j < resultColumn; j++) {
+                            result[i][j] = matrix.getData()[j][i];
+                        }
+                    }
+                }
+                case 2 -> {
+                    resultRow = matrix.getColumns();
+                    resultColumn = matrix.getRows();
+                    result = new double[resultRow][resultColumn];
+                    for (int i = 0; i < resultRow; i++) {
+                        for (int j = 0; j < resultColumn; j++) {
+                            result[i][j] = matrix.getData()[matrix.getRows() - 1 - j][matrix.getColumns() - 1 - i];
+                        }
+                    }
+                }
+                case 3 -> {
+                    resultRow = matrix.getRows();
+                    resultColumn = matrix.getColumns();
+                    result = new double[resultRow][resultColumn];
+                    for(int i = 0; i < resultRow; i++){
+                        for(int j = 0; j < resultColumn; j++){
+                            result[i][j] = matrix.getData()[i][matrix.getColumns() - 1 - j];
+                        }
+                    }
+                }
+                case 4 -> {
+                    resultRow = matrix.getRows();
+                    resultColumn = matrix.getColumns();
+                    result = new double[resultRow][resultColumn];
+                    for(int i = 0; i < resultRow; i++){
+                        for(int j = 0; j < resultColumn; j++){
+                            result[i][j] = matrix.getData()[matrix.getRows() - 1 - i][j];
+                        }
+                    }
+                }
+                default -> throw new Exception("Incorrect type");
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
+        return new Matrix(resultRow, resultColumn, result);
+    }
+
+    public static double determinant(Matrix matrix){
+        try{
+            if(matrix.getColumns() != matrix.getRows()){
+                throw new Exception("The determinant is existing only for square matrix");
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
+        int matrixLength = matrix.getRows();
+        if (matrixLength == 1){
+            return matrix.getData()[0][0];
+        }
+        else if(matrixLength == 2){
+            return matrix.getData()[0][0] * matrix.getData()[1][1] - matrix.getData()[0][1] *matrix.getData()[1][0];
+        }
+        double det = 0;
+        for(int i = 0; i < matrixLength; i++){
+            double [][] minorData = new double[matrixLength][matrixLength];
+            for(int j = 1;j<matrixLength; j++){
+                int shift = 0;
+                for(int k = 0; k < matrixLength; k++){
+                    if(k==i){
+                        shift = 1;
+                        continue;
+                    }
+                    minorData[j - 1][k - shift] = matrix.getData()[j][k];
+                }
+            }
+            Matrix minor = new Matrix(matrixLength - 1, matrixLength - 1, minorData);
+            det += Math.pow(-1, i) * Matrix.determinant(minor) * matrix.getData()[0][i];
+        }
+        return det;
+    }
 }
