@@ -210,4 +210,45 @@ public class Matrix {
         }
         return det;
     }
+
+    public static Matrix reverse(Matrix matrix){
+        double det = 1;
+        try{
+            if(matrix.getColumns() != matrix.getRows()){
+                throw new Exception("Reverse matrix for non-square matrix doesn`t exist");
+            }
+            det = Matrix.determinant(matrix);
+            if(det==0){
+                throw new Exception("Reverse matrix for matrix with zero determinant doesn`t exist");
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
+        int matrixLength = matrix.getRows();
+        double[][] resultData = new double [matrixLength][matrixLength];
+        Matrix transposedMatrix = transpose(matrix, 1);
+        for(int i=0; i<matrixLength;i++){
+            for(int j=0; j<matrixLength;j++){
+                double[][] minor = new double[matrixLength - 1][matrixLength - 1];
+                int row_shift = 0;
+                for(int k=0; k<matrixLength;k++){
+                    if(k==i){
+                        row_shift = 1;
+                        continue;
+                    }
+                    int column_shift = 0;
+                    for(int p=0; p<matrixLength;p++){
+                        if(p==j){
+                            column_shift = 1;
+                            continue;
+                        }
+                        minor[k-row_shift][p-column_shift] = transposedMatrix.getData()[k][p];
+                    }
+                }
+                resultData[i][j] = Math.pow(-1, i+j) * Matrix.determinant(new Matrix(matrixLength - 1,matrixLength - 1,minor));
+            }
+        }
+        return Matrix.multiplyByConstant(new Matrix(matrixLength, matrixLength, resultData), 1/det);
+    }
 }

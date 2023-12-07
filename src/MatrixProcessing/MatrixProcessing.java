@@ -14,6 +14,7 @@ public class MatrixProcessing {
                     3.Multiply matrices
                     4.Transpose matrix
                     5.Calculate a determinate
+                    6.Inverse matrix
                     0.Exit""");
             System.out.print("Your choice: ");
             option = in.nextLine();
@@ -23,6 +24,7 @@ public class MatrixProcessing {
                 case "3" -> matricesMultiply();
                 case "4" -> matrixTranspose();
                 case "5" -> matrixDeterminate();
+                case "6" -> matrixReverse();
             }
         }
     }
@@ -97,6 +99,16 @@ public class MatrixProcessing {
         double result = Matrix.determinant(matrix);
         System.out.println("The result is:");
         System.out.println(new DecimalFormat( "#.###" ).format(result));
+    }
+
+    private static void matrixReverse(){
+        System.out.print("Enter size of matrix:");
+        int[] Sizes = getSizes();
+        System.out.println("Enter matrix:");
+        Matrix matrix = new Matrix(Sizes[0], Sizes[1]);
+        Matrix result = Matrix.reverse(matrix);
+        System.out.println("The result is:");
+        result.print();
     }
 
     private static int[] getSizes() {
