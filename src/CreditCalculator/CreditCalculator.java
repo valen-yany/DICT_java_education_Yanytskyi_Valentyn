@@ -1,45 +1,63 @@
 package CreditCalculator;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class CreditCalculator {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Credit C = new Credit();
-        System.out.println("Enter the loan principal:");
-        int principal = in.nextInt();
-        C.setPrincipal(principal);
+        CreditLogic C = new CreditLogic();
         while (true) {
             System.out.println("""
                     What do you want to calculate?
-                    type "m" – for number of monthly payments,
-                    type "p" – for the monthly payment:""");
+                    type "n" for number of monthly payments,
+                    type "a" for annuity monthly payment amount,
+                    type "p" for loan principal:""");
             String type = in.next();
-            if (type.equals("m")) {
+            if(!Arrays.asList(new String[]{"n", "a", "p"}).contains(type)){
+                continue;
+            }
+            if(!type.equals("p")){
+                System.out.println("Enter the loan principal:");
+                C.setPrincipal(in.nextInt());
+            }
+            if(!type.equals("a")){
                 System.out.println("Enter the monthly payment:");
-                int monthly_payment = in.nextInt();
-                C.setMonthlyPayment(monthly_payment);
-                String months = (C.getMonths() > 1) ? "%d months".formatted(C.getMonths()) : "%d month".formatted(C.getMonths());
-                System.out.printf("It will take %d months to repay the loan", months);
-                break;
+                C.setMonthlyPayment(in.nextDouble());
             }
-            else if(type.equals("p")){
-                System.out.println("Enter the number of months:");
-                int months = in.nextInt();
-                C.setMonths(months);
-                String last_payment = (C.getLastPayment() > 0)? "and the last payment = %d".formatted(C.getLastPayment()) : "";
-                System.out.printf("Your monthly payment = %d %s", C.getMonthlyPayment(), last_payment);
-                break;
+            if (!type.equals("n")) {
+                System.out.println("Enter the number of periods:");
+                C.setMonths(in.nextInt());
             }
+            System.out.println("Enter the loan interest:");
+            C.setInterest(in.nextDouble());
+            C.Calculate();
+            if(type.equals("p")){
+                System.out.printf("Your loan principal = %d", C.getPrincipal());
+            }
+            else if(type.equals("a")){
+                System.out.println(C.getMonthlyPayment() == Math.ceil(C.getMonthlyPayment()) ? "Your monthly payment = %d".formatted((int) C.getMonthlyPayment()): "Your monthly payment = %.2f".formatted(C.getMonthlyPayment()));
+            }
+            else if(type.equals("n")){
+                int years = C.getMonths() / 12;
+                int months = C.getMonths() % 12;
+                String months_text = months > 0? months > 1? "%d months".formatted(months):"1 month" : "";
+                String date = years == 0? months_text: years > 1? "%d years %s".formatted(years, months > 0? "and " + months_text: months_text) : "%d year %s".formatted(years, months > 0? "and " + months_text: months_text);
+                System.out.println("It will take " + date + " to repay this loan");
+            }
+            break;
         }
     }
 }
 
-class Credit{
-    private int principal;
-    private int months;
-    private int monthlyPayment;
-    private int lastPayment;
+class CreditLogic {
+
+    private Integer principal;
+    private Integer months;
+    private Double monthlyPayment ;
+
+    private double interest;
+
 
     public void setPrincipal(int principal){
         this.principal = principal;
@@ -47,16 +65,27 @@ class Credit{
 
     public void setMonths(int months){
         this.months = months;
-        this.monthlyPayment = (int)Math.ceil((double) principal / months);
-        this.lastPayment = monthlyPayment*months != principal?  principal - (months - 1) * monthlyPayment : 0;
     }
 
-    public void setMonthlyPayment(int monthlyPayment){
+    public void setInterest(double interest){
+        this.interest = interest/1200;
+    }
+
+    public void setMonthlyPayment(double monthlyPayment){
         this.monthlyPayment = monthlyPayment;
-        this.months = (int)Math.ceil((double) principal / monthlyPayment);
     }
 
-    public int getMonthlyPayment(){
+    public void Calculate() {
+        if (principal == null) {
+            principal = (int) Math.ceil(monthlyPayment / ((interest * Math.pow(1 + interest, months)) / (Math.pow(1 + interest, months) - 1)));
+        } else if (monthlyPayment == null) {
+            monthlyPayment = principal * ((interest * Math.pow(1 + interest, months)) / (Math.pow(1 + interest, months) - 1));
+        } else if (months == null) {
+            months = (int) Math.ceil(Math.log(monthlyPayment / (monthlyPayment - interest * principal)) / Math.log(1 + interest));
+        }
+    }
+
+    public double getMonthlyPayment(){
         return monthlyPayment;
     }
 
@@ -64,7 +93,11 @@ class Credit{
         return months;
     }
 
-    public int getLastPayment(){
-        return lastPayment;
+    public int getPrincipal(){
+        return principal;
+    }
+
+    public double getInterest() {
+        return interest;
     }
 }
